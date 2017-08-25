@@ -38,9 +38,11 @@ interested in having a script that "just works" without any
 environmental dependencies.)
 
 7) Edit the `githubProject` and `repoRegex` strings to reflect your
-   project (the string after `https://github.com/` when you visit
-   any of your repositories) and then a regular expression that lets
-   you pick which repos you want to include vs. ignore.
+   project's name (e.g., for `https://github.com/RiceComp215`, the
+   project name is `RiceComp215`). You should also specify a suitable
+   regular expression in `repoRegex`, specifying
+   which repos you want to include. Non-matching repos will be
+   ignored.
 
 
 ## Usage
