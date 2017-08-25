@@ -103,8 +103,8 @@ while not foundLastRepo:
 # "@type": "repository",
 # "description": "comp215-week01-intro-2017-studentName created by GitHub Classroom" }
 
-# We're interested in whether it's activated and whether or not there's been
-# a build yet. If inactive, we'll activate. If no build, we'll trigger one.
+# We're interested in whether it's activated.
+# If inactive, we'll activate and trigger a build.
 
 
 desiredSettings = {
