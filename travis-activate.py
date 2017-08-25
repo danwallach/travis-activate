@@ -1,17 +1,11 @@
+# travis-activate.py
+# Dan Wallach <dwallach@rice.edu>
+
 import requests
 import json
 import re
 
-# to make this work, you'll first need to 'pip install requests'
-
-# how to get a Travis token:
-# 1) First, get a GitHub token with all the "Repo" privileges
-# 2) Use this GitHub token to get a corresponding Travis token
-#
-# echo '{"github_token": "XXXXX"}' | http POST https://api.travis-ci.com/auth/github User-Agent:HTTPIE/1.0 Accept:application/vnd.travis-ci.2+json
-# (this using the 'httpie' command-line tool)
-#
-# 3) paste the resulting access token below
+# see installation and usage instructions in README.md
 
 travisToken = 'YOUR_TOKEN_GOES_HERE'
 
