@@ -9,29 +9,31 @@ import re
 
 travisToken = 'YOUR_TOKEN_GOES_HERE'
 
-# and we're going to need the name of your GitHub "project" in which all your students' work lives
+# and we're going to need the name of your GitHub "project" in which all your
+# students' work lives
 
 githubProject = 'RiceComp215'
 
 # and since there are going to be lots of repos that we don't necessarily care about, let's
 # have a predicate to match the ones we *do* care about
 
-repoRegex = "comp215-.*-2017.*"
+repoRegex = "comp215-.*-2017"
 
-# API documentation: https://developer.travis-ci.org/ (for the V3 APIs, which are mostly what we're using here)
+# API documentation: https://developer.travis-ci.org/ 
+# (for the V3 APIs, which are mostly what we're using here)
 
 requestHeaders = {
-   "User-Agent": "TravisActivate/1.0",
-   "Authorization": "token \"" + travisToken + "\"",
-   "Accept": "application/vnd.travis-ci.2+json"
+    "User-Agent": "TravisActivate/1.0",
+    "Authorization": "token \"" + travisToken + "\"",
+    "Accept": "application/vnd.travis-ci.2+json"
 }
 
 requestHeadersV3 = {
-   "User-Agent": "TravisActivate/1.0",
-   "Content-Type": "application/json",
-   "Accept": "application/json",
-   "Travis-API-Version": "3",
-   "Authorization": "token " + travisToken
+    "User-Agent": "TravisActivate/1.0",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Travis-API-Version": "3",
+    "Authorization": "token " + travisToken
 }
 
 #
@@ -45,7 +47,9 @@ offset = 0
 
 while not foundLastRepo:
     print "Fetching repos: " + str(offset) + " -> " + str(offset+limit)
-    repoDump = requests.get('https://api.travis-ci.com/owner/' + githubProject + '/repos', headers = requestHeadersV3, params = {'limit': limit, 'offset': offset})
+    repoDump = requests.get('https://api.travis-ci.com/owner/' + githubProject + '/repos',
+                            headers = requestHeadersV3,
+                            params = {'limit': limit, 'offset': offset})
     
     if repoDump.status_code != 200:
         # hopefuly human-readable text complaining about the problem
@@ -108,12 +112,12 @@ while not foundLastRepo:
 
 
 desiredSettings = {
-  "settings": {
-    "builds_only_with_travis_yml": True,
-    "build_pushes": True,
-    "build_pull_requests": True,
-    "maximum_number_of_builds": 1
-  }
+    "settings": {
+        "builds_only_with_travis_yml": True,
+        "build_pushes": True,
+        "build_pull_requests": True,
+        "maximum_number_of_builds": 1
+    }
 }
 
 buildRequest = {
@@ -133,7 +137,8 @@ updated = 0
 repoMatcher = re.compile(repoRegex)
 print "---------------------"
 repoListFiltered = [x for x in repoList if repoMatcher.search(x['slug'])]
-print "Total repos found: " + str(len(repoListFiltered)) + " of " + str(len(repoList)) + " matching " + repoRegex
+print "Total repos found: " + str(len(repoListFiltered)) + \
+    " of " + str(len(repoList)) + " matching " + repoRegex
 
 
 for repo in repoListFiltered:
@@ -141,9 +146,13 @@ for repo in repoListFiltered:
         id = str(repo['id'])
         print "Activating: " + repo['slug']
         # activate Travis for the repo
-        requests.post('https://api.travis-ci.com/repo/' + id + "/activate", headers = requestHeadersV3, data = json.dumps(buildRequest))
+        requests.post('https://api.travis-ci.com/repo/' + id + "/activate",
+                      headers = requestHeadersV3,
+                      data = json.dumps(buildRequest))
         # set all the build flags normally
-        requests.patch('https://api.travis-ci.com/repos/' + id + "/settings", headers = requestHeaders, data = json.dumps(desiredSettings))
+        requests.patch('https://api.travis-ci.com/repos/' + id + "/settings",
+                       headers = requestHeaders,
+                       data = json.dumps(desiredSettings))
         updated = updated + 1
 
 if updated > 0:
@@ -154,7 +163,9 @@ for repo in repoListFiltered:
         id = str(repo['id'])
         print "Requesting rebuild: " + repo['slug']
         # ask for a rebuild
-        requests.post('https://api.travis-ci.com/repo/' + id + "/requests", headers = requestHeadersV3, data = json.dumps(buildRequest))
+        requests.post('https://api.travis-ci.com/repo/' + id + "/requests",
+                      headers = requestHeadersV3,
+                      data = json.dumps(buildRequest))
 
 if updated > 0:
     print "---------------------"
