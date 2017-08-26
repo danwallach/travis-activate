@@ -27,7 +27,7 @@ this on the GitHub website
   "XXXXX" with your GitHub API token.)
 
 ```
-echo '{"github_token": "XXXXX"}' | http POST https://api.travis-ci.com/auth/github User-Agent:HTTPIE/1.0 Accept:application/vnd.travis-ci.2+json
+http POST https://api.travis-ci.com/auth/github github_token=XXXXX
 ```
 
 6) Now you'll have a Travis API token. Edit the `travis-activate.py`
