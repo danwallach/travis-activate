@@ -19,7 +19,7 @@ Dunno.)
 this on the GitHub website
 [(instructions)](https://github.com/blog/1509-personal-api-tokens). 
 
-4) Install the `httpie` command-line tool or work out an equivalent
+4) Install the [httpie](https://httpie.org/) command-line tool or work out an equivalent
    to the request below with something else.
 
 5) Run this one-liner, or something like it, which tells Travis your
