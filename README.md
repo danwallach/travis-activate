@@ -13,16 +13,16 @@ requests` for a necessary library.
 
 2) You need to get a "token" for Travis-CI, which isn't the same thing
 as the "token" that Travis-CI displays when you log into it. (Why?
-Dunno.)
+No idea.)
 
 3) First, get a GitHub token with all the "Repo" privileges. You do
 this on the GitHub website
 [(instructions)](https://github.com/blog/1509-personal-api-tokens). 
 
-4) Install the [httpie](https://httpie.org/) command-line tool or work out an equivalent
-   to the request below with something else.
+4) Install the [httpie](https://httpie.org/) command-line tool.
 
-5) Run this one-liner, or something like it, which tells Travis your
+5) Run this one-liner, or something like it with your favorite
+  alternative tool, telling Travis your
   GitHub API token and returns you a Travis-API token. (Replace
   "XXXXX" with your GitHub API token.)
 
