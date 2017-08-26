@@ -37,7 +37,7 @@ this script to take the token as an external argument. We're more
 interested in having a script that "just works" without any
 environmental dependencies.)
 
-7) Edit the `githubProject` and `repoRegex` strings to reflect your
+7) Edit the `githubProject` string to reflect your
    project's name (e.g., for `https://github.com/RiceComp215`, the
    project name is `RiceComp215`). You should also specify a suitable
    regular expression in `repoRegex`, specifying
