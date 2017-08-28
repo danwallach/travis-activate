@@ -23,7 +23,7 @@ this on the GitHub website
 
 5) Run this one-liner, or something like it with your favorite
   alternative tool, telling Travis your
-  GitHub API token and returns you a Travis-API token. (Replace
+  GitHub API token and returning you a Travis-API token. (Replace
   "XXXXX" with your GitHub API token.)
 
 ```
@@ -49,4 +49,4 @@ environmental dependencies.)
 
 Now you can simply run `python travis-activate.py` and
 it will both activate any previously inactive repos (matching the
-regex) and will request a rebuild for them. Easy!
+regex) and will request a rebuild for them. Easy! Run it from a cron script? Sure!
