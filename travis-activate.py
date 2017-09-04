@@ -140,35 +140,33 @@ repoListFiltered = [x for x in repoList if repoMatcher.search(x['slug'])]
 print "Total repos found: " + str(len(repoListFiltered)) + \
     " of " + str(len(repoList)) + " matching " + repoRegex
 
+repoListInactive = [x for x in repoListFiltered if not x['active']]
 
-for repo in repoListFiltered:
-    if not repo['active']:
-        id = str(repo['id'])
-        print "Activating: " + repo['slug']
-        # activate Travis for the repo
-        requests.post('https://api.travis-ci.com/repo/' + id + "/activate",
-                      headers = requestHeadersV3,
-                      data = json.dumps(buildRequest))
-        # set all the build flags normally
-        requests.patch('https://api.travis-ci.com/repos/' + id + "/settings",
-                       headers = requestHeaders,
-                       data = json.dumps(desiredSettings))
-        updated = updated + 1
-
-if updated > 0:
-    print "---------------------"
-
-for repo in repoListFiltered:
-    if not repo['active']:
-        id = str(repo['id'])
-        print "Requesting rebuild: " + repo['slug']
-        # ask for a rebuild
-        requests.post('https://api.travis-ci.com/repo/' + id + "/requests",
-                      headers = requestHeadersV3,
-                      data = json.dumps(buildRequest))
-
-if updated > 0:
-    print "---------------------"
-    print "Total repos activated/updated: " + str(updated)
-else:
+if len(repoListInactive) == 0:
     print "Every repo is active, nothing to do."
+    exit(0);
+
+for repo in repoListInactive:
+    id = str(repo['id'])
+    print "Activating: " + repo['slug']
+    # activate Travis for the repo
+    requests.post('https://api.travis-ci.com/repo/' + id + "/activate",
+                  headers = requestHeadersV3,
+                  data = json.dumps(buildRequest))
+    # set all the build flags normally
+    requests.patch('https://api.travis-ci.com/repos/' + id + "/settings",
+                   headers = requestHeaders,
+                   data = json.dumps(desiredSettings))
+
+print "---------------------"
+
+for repo in repoListInactive:
+    id = str(repo['id'])
+    print "Requesting rebuild: " + repo['slug']
+    # ask for a rebuild
+    requests.post('https://api.travis-ci.com/repo/' + id + "/requests",
+                  headers = requestHeadersV3,
+                  data = json.dumps(buildRequest))
+
+print "---------------------"
+print "Total repos activated/updated: " + str(len(repoListInactive))
