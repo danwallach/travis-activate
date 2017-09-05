@@ -146,6 +146,8 @@ if len(repoListInactive) == 0:
     print "Every repo is active, nothing to do."
     exit(0);
 
+print "Total repos needing activation: " + str(len(repoListInactive))
+
 for repo in repoListInactive:
     id = str(repo['id'])
     print "Activating: " + repo['slug']
@@ -167,6 +169,3 @@ for repo in repoListInactive:
     requests.post('https://api.travis-ci.com/repo/' + id + "/requests",
                   headers = requestHeadersV3,
                   data = json.dumps(buildRequest))
-
-print "---------------------"
-print "Total repos activated/updated: " + str(len(repoListInactive))
