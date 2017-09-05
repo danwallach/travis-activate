@@ -39,7 +39,7 @@ environmental dependencies.)
 
 7) Edit the `githubProject` string to reflect your
    project's name (e.g., for `https://github.com/RiceComp215`, the
-   project name is `RiceComp215`). You should also specify a suitable
+   project name is `RiceComp215`). You should also write a suitable
    regular expression in `repoRegex`, specifying
    which repos you want to include. Non-matching repos will be
    ignored.
