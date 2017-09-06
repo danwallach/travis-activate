@@ -107,9 +107,10 @@ while not foundLastRepo:
 # "@type": "repository",
 # "description": "comp215-week01-intro-2017-studentName created by GitHub Classroom" }
 
-# We're interested in whether it's activated.
-# If inactive, we'll activate and trigger a build.
 
+
+        
+# These two values will be converted to JSON and sent as part of the requests below.
 
 desiredSettings = {
     "settings": {
@@ -125,8 +126,6 @@ buildRequest = {
         "branch": "master"
     }
 }
-
-updated = 0
 
 #
 # Note: the Travis-CI API places a limit on the number of rebuilds that can
