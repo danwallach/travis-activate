@@ -36,7 +36,6 @@ requestHeadersV3 = {
     "Authorization": "token " + travisToken
 }
 
-
 # Before we begin with the specific repos, we're going to ask Travis-CI to synchronize its
 # view of the repositories from GitHub. To do that, we need to get the 'id' of the user,
 # since that's part of the subsequent 'sync' request.
@@ -52,10 +51,9 @@ userId = userInfo.json()['id']
 syncPost = requests.post('https://api.travis-ci.com/user/%d/sync' % userId, headers = requestHeadersV3)
 
 if syncPost.status_code != 200:
-    print "Requested sync from GitHub to Travis failed. Continuing. (%s)"  % syncPost.content
+    print "Requested sync from GitHub to Travis; Travis responded: \"%s\"" % syncPost.json()['error_message']
 else:
-    print "Successful sync from GitHub to Travis." 
-
+    print "Requested sync from GitHub to Travis."
 
 foundLastRepo = False
 repoList = []
@@ -85,7 +83,6 @@ while not foundLastRepo:
         limit = pagination['next']['limit']
         offset = pagination['next']['offset']
         
-
 # each entry in the list now looks something like this: {
 # "slug": "RiceComp215/comp215-week01-intro-2017-studentName",
 # "name": "comp215-week01-intro-2017-studentName",
@@ -124,9 +121,9 @@ while not foundLastRepo:
 # "@type": "repository",
 # "description": "comp215-week01-intro-2017-studentName created by GitHub Classroom" }
 
-# We're interested in whether it's activated.
-# If inactive, we'll activate and trigger a build.
+################
 
+# For the requests we're about to make, we need to send these requests to Travis.
 
 desiredSettings = {
     "settings": {
@@ -165,11 +162,11 @@ print "Total repos needing activation: %d" % len(repoListInactive)
 for repo in repoListInactive:
     id = str(repo['id'])
     print "Activating: " + repo['slug']
-    # activate Travis for the repo
+
     requests.post('https://api.travis-ci.com/repo/%s/activate' % id,
                   headers = requestHeadersV3,
                   data = json.dumps(buildRequest))
-    # set all the build flags normally
+
     requests.patch('https://api.travis-ci.com/repos/%s/settings' % id,
                    headers = requestHeaders,
                    data = json.dumps(desiredSettings))
@@ -179,7 +176,7 @@ print "---------------------"
 for repo in repoListInactive:
     id = str(repo['id'])
     print "Requesting rebuild: " + repo['slug']
-    # ask for a rebuild
+
     requests.post('https://api.travis-ci.com/repo/%s/requests' % id,
                   headers = requestHeadersV3,
                   data = json.dumps(buildRequest))
