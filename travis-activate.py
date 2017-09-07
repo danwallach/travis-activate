@@ -36,9 +36,26 @@ requestHeadersV3 = {
     "Authorization": "token " + travisToken
 }
 
-#
-# TODO: tell travis to sync with GitHub first?
-#
+
+# Before we begin with the specific repos, we're going to ask Travis-CI to synchronize its
+# view of the repositories from GitHub. To do that, we need to get the 'id' of the user,
+# since that's part of the subsequent 'sync' request.
+
+userInfo = requests.get('https://api.travis-ci.com/user', headers = requestHeadersV3) 
+
+if userInfo.status_code != 200:
+    print "Failed to load user info from Travis: " + userInfo.content
+    exit(1)
+
+userId = userInfo.json()['id']
+
+syncPost = requests.post('https://api.travis-ci.com/user/%d/sync' % userId, headers = requestHeadersV3)
+
+if syncPost.status_code != 200:
+    print "Requested sync from GitHub to Travis failed. Continuing. (%s)"  % syncPost.content
+else:
+    print "Successful sync from GitHub to Travis." 
+
 
 foundLastRepo = False
 repoList = []
@@ -46,8 +63,8 @@ limit = 100    # make this bigger, and nothing happens
 offset = 0
 
 while not foundLastRepo:
-    print "Fetching repos: " + str(offset) + " -> " + str(offset+limit)
-    repoDump = requests.get('https://api.travis-ci.com/owner/' + githubProject + '/repos',
+    print "Fetching repos: %d -> %d" % (offset, offset+limit)
+    repoDump = requests.get('https://api.travis-ci.com/owner/%s/repos' % githubProject,
                             headers = requestHeadersV3,
                             params = {'limit': limit, 'offset': offset})
     
@@ -107,10 +124,9 @@ while not foundLastRepo:
 # "@type": "repository",
 # "description": "comp215-week01-intro-2017-studentName created by GitHub Classroom" }
 
+# We're interested in whether it's activated.
+# If inactive, we'll activate and trigger a build.
 
-
-        
-# These two values will be converted to JSON and sent as part of the requests below.
 
 desiredSettings = {
     "settings": {
@@ -136,8 +152,7 @@ buildRequest = {
 repoMatcher = re.compile(repoRegex)
 print "---------------------"
 repoListFiltered = [x for x in repoList if repoMatcher.search(x['slug'])]
-print "Total repos found: " + str(len(repoListFiltered)) + \
-    " of " + str(len(repoList)) + " matching " + repoRegex
+print "Total repos found: %d of %d matching %s" % (len(repoListFiltered), len(repoList), repoRegex)
 
 repoListInactive = [x for x in repoListFiltered if not x['active']]
 
@@ -145,17 +160,17 @@ if len(repoListInactive) == 0:
     print "Every repo is active, nothing to do."
     exit(0);
 
-print "Total repos needing activation: " + str(len(repoListInactive))
+print "Total repos needing activation: %d" % len(repoListInactive)
 
 for repo in repoListInactive:
     id = str(repo['id'])
     print "Activating: " + repo['slug']
     # activate Travis for the repo
-    requests.post('https://api.travis-ci.com/repo/' + id + "/activate",
+    requests.post('https://api.travis-ci.com/repo/%s/activate' % id,
                   headers = requestHeadersV3,
                   data = json.dumps(buildRequest))
     # set all the build flags normally
-    requests.patch('https://api.travis-ci.com/repos/' + id + "/settings",
+    requests.patch('https://api.travis-ci.com/repos/%s/settings' % id,
                    headers = requestHeaders,
                    data = json.dumps(desiredSettings))
 
@@ -165,6 +180,6 @@ for repo in repoListInactive:
     id = str(repo['id'])
     print "Requesting rebuild: " + repo['slug']
     # ask for a rebuild
-    requests.post('https://api.travis-ci.com/repo/' + id + "/requests",
+    requests.post('https://api.travis-ci.com/repo/%s/requests' % id,
                   headers = requestHeadersV3,
                   data = json.dumps(buildRequest))

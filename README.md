@@ -50,3 +50,6 @@ environmental dependencies.)
 Now you can simply run `python travis-activate.py` and
 it will both activate any previously inactive repos (matching the
 regex) and will request a rebuild for them. Easy! Run it from a cron script? Sure!
+Note that this script *requests* that Travis synchronize itself with
+GitHub, but this request appears to be asynchronous, so a single run
+of this script might still miss some recently created repositories.
